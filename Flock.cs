@@ -8,40 +8,75 @@ public class Flock : MonoBehaviour
     public FlockManager myManager;
     public float speed;
 
-    Bounds bounds = new Bounds(new Vector3(0, 0, 0), new Vector3(5, 5, 5));
+    Bounds bounds = new Bounds(new Vector3(0.0f, 0.0f, 0.0f), new Vector3(5.0f, 5.0f, 5.0f));
 
 
 
     // Start is called before the first frame update
     void Start()
     {
-        speed = Random.Range(myManager.minSpeed, myManager.maxSpeed);    
+        speed = Random.Range(myManager.minSpeed, myManager.maxSpeed);
     }
+    //End Of Start
 
     // Update is called once per frame
     void Update()
     {
         RaycastHit hit = new RaycastHit();
-        Vector3 direction = Vector3.zero;
-        
+        Vector3 direction;
+
         bool turning = false;
-        if(bounds.Contains(transform.position)) {
-            turning = false;
-            ApplyRules();
+        if (bounds.Contains(myManager.flockBoundary))
+        {
+            if (turning == false)
+            {
+                if (Random.Range(0.0f, 100.0f) < 20.0f)
+                {
+                    Debug.Log(Random.Range(0.0f, 100.0f) < 20.0f);
+                    ApplyRules();
+                }
+                //End Of If
+
+                if (Random.Range(0.0f, 100.0f) < 10.0f)
+                {
+                    speed = Random.Range(0.0f, 2.0f);
+                }
+                //End Of If
+            }
+            //End Of If
+            //False clause done
         }
-        else {
+        else
+        {
+
             turning = true;
-            direction = Vector3.Reflect(this.transform.forward, hit.normal);
-            transform.rotation = Quaternion.Slerp(
-                    transform.rotation,
-                    Quaternion.LookRotation(direction),
-                    myManager.rotationSpeed * Time.deltaTime
-               );
+            if (!bounds.Contains(myManager.flockBoundary)) //Outside Boundary
+            {
+                if (turning == true)
+                {
+
+                    //Reflect Step
+                    Physics.Raycast(transform.position, this.transform.forward * 50.0f, out hit);
+                    direction = Vector3.Reflect(this.transform.forward, hit.normal);
+
+                    //Quaternion Slerp Step
+                    transform.rotation = Quaternion.Slerp(
+                            transform.rotation,
+                            Quaternion.LookRotation(direction),
+                            myManager.rotationSpeed * Time.deltaTime
+                       );
+                }
+                
+
+            }
+            //End Of If
         }
+        //End Of If Else
 
 
         this.transform.Translate(0.0f, 0.0f, Time.deltaTime * speed);
     }
+    //End Of Update
 
 
     void ApplyRules()
@@ -60,9 +95,9 @@ public class Flock : MonoBehaviour
         foreach (GameObject go in gos)
         {
             if (go == this.gameObject) continue;
-            // is this in the neighbouurhood?
+            // is this in the neighbourhood?
             nDistance = Vector3.Distance(go.transform.position, this.transform.position);
-            if (nDistance <= myManager.neightbourDistance)
+            if (nDistance <= myManager.neighbourDistance)
             {
                 // get the center of the neighbours
                 vCenter += go.transform.position;
@@ -80,9 +115,9 @@ public class Flock : MonoBehaviour
                 gSpeed += anotherBoid.speed;
 
             }
-           
+
         }
-        // end of foreach of all the gos
+        // End Of ForEach of all the gos
 
         if (groupSize > 0)
         {
@@ -96,9 +131,9 @@ public class Flock : MonoBehaviour
                     transform.rotation,
                     Quaternion.LookRotation(direction),
                     myManager.rotationSpeed * Time.deltaTime
-               ) ;
+               );
             }
 
-        }// end of groupSize if
+        }// End Of If
     }
 }

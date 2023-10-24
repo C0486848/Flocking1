@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class FlockManager : MonoBehaviour
@@ -10,17 +11,17 @@ public class FlockManager : MonoBehaviour
     public GameObject[] allBoids;
     public Vector3 boidLimits = new Vector3(5.0f, 5.0f, 5.0f);
 
-    public Vector3 flockBoundary = new Vector3 (5.0f, 5.0f, 5.0f);
-   
+    public Vector3 flockBoundary = new Vector3(5.0f, 5.0f, 5.0f);
+
     [Header("Boid Settings")]
     [Range(0.0f, 5.0f)]
     public float minSpeed;
-   
+
     [Range(0.0f, 5.0f)]
     public float maxSpeed;
-   
+
     [Range(1.0f, 10.0f)]
-    public float neightbourDistance;
+    public float neighbourDistance;
 
     [Range(0.0f, 5.0f)]
     public float rotationSpeed;
